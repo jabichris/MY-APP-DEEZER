@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "stable"
+cache:
+  directories:
+  - node_modules
+script:
+  - npm test -- --coverage # Include coverage when running tests
+  - npm run build
+after_script: # Upload coverage reports 
+  - COVERALLS_REPO_TOKEN=3FZX8D3GgXtTMJXOLZjSYuGvv9ys0ax8j
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $github_token
+  local_dir: build
+  on:
+    branch: master
