@@ -1,10 +1,11 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Home from './Home';
+import Search from './Search';
+import initialDetails from '../data/initialDetails';
 
 export const Routes = () => (
   <Switch>
-    <Route exact path="/" render={props => <Home {...props} />} />
+    <Route exact path="/" render={() => <Search details={initialDetails} />} />
   </Switch>
 );
 
