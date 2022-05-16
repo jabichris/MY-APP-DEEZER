@@ -1,11 +1,18 @@
 import * as React from "react";
+import { connect } from "react-redux";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
+import rootReducers from '../../reducers';
+import { SearchArtists } from '../../store/initialState';
+// import {SearchArtists as initialState } from '../store/initialState';
+
+import { searchArtists } from "../../actions";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -22,6 +29,7 @@ const Search = styled("div")(({ theme }) => ({
     width: "auto",
   },
 }));
+
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -47,15 +55,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar({ details }) {
+const PrimarySearchAppBar = ({ details,props }) => {
   const [searchField, setSearchField] = React.useState("");
+  const [state, dispatch] = React.useReducer(rootReducers, SearchArtists);
+  console.log("SATE", state)
   const filteredPersons = details.filter((person) => {
     return (
       person.name.toLowerCase().includes(searchField.toLowerCase()) ||
       person.email.toLowerCase().includes(searchField.toLowerCase())
     );
   });
-  console.log('filteredPersons', filteredPersons)
+
+  // console.log('props', this.props)
   const handleChange = (e) => {
     setSearchField(e.target.value);
   };
@@ -76,13 +87,30 @@ export default function PrimarySearchAppBar({ details }) {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
               onChange={handleChange}
               inputProps={{ "aria-label": "search" }}
             />
+            <Button
+              variant="text"
+              onClick={() => {
+                dispatch(searchArtists(`search?q=${searchField}`, searchField));
+              }}
+              style={{ color: "white" }}
+            >
+              Search
+            </Button>
           </Search>
         </Toolbar>
       </AppBar>
     </Box>
   );
-}
+};
+const mapStateToProps = state =>({
+   SearchArtists : state.searchArtists,
+})
+
+// const mapDispatchToProps = (dispatch) => ({
+//   fetchDataAction: () => dispatch(searchArtists())  
+// });
+
+export default connect(mapStateToProps, { searchArtists })(PrimarySearchAppBar);
